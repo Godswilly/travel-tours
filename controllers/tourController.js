@@ -3,6 +3,7 @@ const Tour = require('./../models/tourModel');
 exports.getAllTours = async (req, res) => {
   try {
     // Create a shallow copy of the request.query object (BUILD QUERY)
+
     // (1A) FILTERING
     let queryObj = { ...req.query };
     
