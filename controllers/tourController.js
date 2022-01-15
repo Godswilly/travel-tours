@@ -1,21 +1,35 @@
-const Tour = require('../models/tourModel');
+const Tour = require('./../models/tourModel');
 
 exports.getAllTours = async (req, res) => {
   try {
-    // Create a shallow copy of the requesst.query object (BUILD QUERY)
-    // 1) Filtering
-    const queryObj = {...req.query};
+    // Create a shallow copy of the request.query object (BUILD QUERY)
+    // (1A) FILTERING
+    let queryObj = { ...req.query };
+    
     const excludedFields = ['page', 'sort', 'limit', 'fields'];
+
+    //delete the exculded fields from the queryObject
     excludedFields.forEach((el) => delete queryObj[el]);
 
-    // 2) Advance filtering
+    // (1B) Advnced filtering
     let queryStr = JSON.stringify(queryObj);
-    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);
-    console.log(JSON.parse(queryStr));
 
-    const query = await Tour.find(JSON.parse(queryStr));
+    // add $ to the query param to match that of mongodb
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
 
-    // EXECUTE QUERY
+    queryObj = JSON.parse(queryStr);
+
+    let query = Tour.find(queryObj);
+
+    // (2) SORTING
+
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(',').join(' ');
+      query = query.sort(sortBy);
+    } else {
+      query = query.sort('-createdAt')
+    }
+
     const tours = await query;
 
     // const query = await Tour.find()
