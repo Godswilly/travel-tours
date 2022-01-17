@@ -9,6 +9,12 @@ const DB = process.env.DATABASE.replace('<PASSWORD>', process.env.DATABASE_PASSW
 mongoose.connect(DB).then(() => console.log('DB connection successful!!'));
 
 const port = process.env.PORT || 5000;
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`App running on port ${port}...`);
+});
+
+process.on('unhandledRejection', err => {
+  server.close(() => {
+    process.exit(1);
+  });
 });
