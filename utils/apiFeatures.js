@@ -5,8 +5,8 @@ class APIFeatures {
   }
 
   filter() {
-    let queryObj = { ...this.queryString };
-    
+    const queryObj = { ...this.queryString };
+
     const excludedFields = ['page', 'sort', 'limit', 'fields'];
 
     //delete the exculded fields from the queryObject
@@ -18,7 +18,7 @@ class APIFeatures {
     // add $ to the query param to match that of mongodb
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
 
-    this.query.find(JSON.parse(queryStr))
+    this.query.find(JSON.parse(queryStr));
 
     return this;
   }
@@ -26,9 +26,9 @@ class APIFeatures {
   sort() {
     if (this.queryString.sort) {
       const sortBy = this.queryString.sort.split(',').join(' ');
-     this.query = this.query.sort(sortBy);
+      this.query = this.query.sort(sortBy);
     } else {
-      this.query = this.query.sort('-createdAt')
+      this.query = this.query.sort('-createdAt');
     }
 
     return this;
